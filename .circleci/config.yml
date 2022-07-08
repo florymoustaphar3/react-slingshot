@@ -1,4 +1,8 @@
 version: 2.1
+commands:
+  print_pipeline_id:
+    steps:
+      - run: echo ${CIRCLE_WORKFLOW_ID}
 
 jobs:
   build:
@@ -33,6 +37,7 @@ jobs:
           keys:
             - "npm-packages"  
       - run: npm audit
+      - print_pipeline_id
 
 workflows:
   my_CI_PipelineWorkFlow:
