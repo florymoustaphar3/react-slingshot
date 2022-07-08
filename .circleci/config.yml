@@ -1,55 +1,34 @@
 version: 2.1
-commands:
-  print_pipeline_id:
-    steps:
-      - run: echo ${CIRCLE_WORKFLOW_ID}
 
 jobs:
   build:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run: npm
-      - save_cache:
-          key: "npm-packages"
-          paths:  
-            - /src/node_modules
+      - run: npm i
       - run: npm run lint
-
   test:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - "npm-packages"
-      - run: npm i      
+      - run: npm i
       - run: npm run test
-
   analyze:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - "npm-packages"  
       - run: npm audit
-      - print_pipeline_id
 
 workflows:
-  my_CI_PipelineWorkFlow:
+  my_workflow:
     jobs:
       - build
       - test:
           requires:
-           - build
+            - build
       - analyze:
           requires:
-           - test
-
-#For the build job, npm run lint
-#For the test job, npm run test
-#For the analyze job, npm audit     
+            - test
